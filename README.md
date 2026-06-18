@@ -46,6 +46,8 @@ npm install
 npm run dev
 npm run build
 npm run preview
+npm run predeploy
+npm run deploy
 npm run lint
 npm run test
 npm run test:coverage
@@ -67,3 +69,54 @@ VITE_DEFAULT_PAGE_SIZE=12
 - `pre-commit` ejecuta `lint-staged`, `eslint` y `vitest`
 - Si falla lint o tests, el commit queda bloqueado
 - La arquitectura ya queda preparada para autenticacion, backend propio, filtros avanzados, i18n, PWA e infinite scroll
+
+## Despliegue en GitHub Pages
+
+Repositorio objetivo:
+
+- Owner: `aviera98`
+- Repo: `eldenring-react-app`
+- URL final: `https://aviera98.github.io/eldenring-react-app/`
+
+Configuracion aplicada:
+
+- `vite.config.ts` usa `base: '/eldenring-react-app/'`
+- `BrowserRouter` detecta el subpath de GitHub Pages y aplica el `basename` correcto
+- el build genera tambien `dist/404.html` para soportar refresh y rutas directas en una SPA
+- se agrego `gh-pages` para despliegue manual
+- se agrego GitHub Actions para despliegue automatico en cada push a `main`
+
+### Opcion recomendada: GitHub Actions
+
+Es preferible a `gh-pages` porque:
+
+- no depende de una maquina local para publicar
+- deja el deploy versionado y auditable
+- se ejecuta automaticamente al hacer push a `main`
+- usa el flujo moderno nativo de GitHub Pages
+
+Pasos en GitHub:
+
+1. Ir a `Settings > Pages`
+2. En `Source`, elegir `GitHub Actions`
+3. Hacer push a `main`
+
+El workflow esta en `.github/workflows/deploy.yml`.
+
+### Despliegue manual con gh-pages
+
+```bash
+npm run deploy
+```
+
+Ese comando ejecuta:
+
+1. `predeploy` -> `npm run build`
+2. `deploy` -> publica `dist` en GitHub Pages usando `gh-pages`
+
+### Verificacion local antes de desplegar
+
+```bash
+npm run build
+npm run preview
+```

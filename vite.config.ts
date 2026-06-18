@@ -8,6 +8,7 @@ import { defineConfig } from 'vite';
 const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
+  base: '/eldenring-react-app/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
